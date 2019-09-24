@@ -3,6 +3,10 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
+
+
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
@@ -13,49 +17,67 @@ class User
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
+     * @Groups({"users_by_customer","show_user"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"users_by_customer", "show_user", "create_user"})
+     * @Assert\NotBlank
      */
     private $firstName;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"users_by_customer", "show_user","create_user"})
+     * @Assert\NotBlank(groups={"create_user"})
      */
     private $lastName;
 
     /**
      * @ORM\Column(type="date", nullable=true)
+     * @Groups({"list_users", "get_user"})
+     * @Assert\NotBlank(groups={"create_user"})
      */
     private $birthDay;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups({"users_by_customer", "show_user","create_user"})
+     * @Assert\NotBlank
      */
     private $address;
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Customer", inversedBy="users", cascade={"persist"})
-     * @ORM\JoinColumn(nullable=false)
-     * @ORM\JoinColumn(name="id",                referencedColumnName="id")
-     */
-    private $customer;
-
-    /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups({"users_by_customer", "show_user","create_user"})
+     * @Assert\NotBlank
      */
     private $city;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups({"users_by_customer", "show_user", "create_user"})
+     * @Assert\NotBlank
+     * @Assert\Email(message="The email '{{value}}' is not a valid email",
+     * checkMX = true)
      */
     private $email;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups({"users_by_customer", "show_user"})
      */
     private $mobileNumber;
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Customer", inversedBy="users", cascade={"persist"})
+     * @ORM\JoinColumn(nullable=false)
+     * @ORM\JoinColumn(name="id",                referencedColumnName="id")
+     * @Groups({"users_by_customer","list_users", "show_user"})
+     * @Assert\NotBlank
+     */
+    private $customer;
+
 
     public function getId(): ?int
     {

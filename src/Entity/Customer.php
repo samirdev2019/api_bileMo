@@ -5,9 +5,15 @@ namespace App\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\CustomerRepository")
+ * @UniqueEntity(
+ * fields={"username"},
+ * message="The username you have indicated is already in use !"
+ * )
  */
 class Customer
 {
@@ -15,24 +21,23 @@ class Customer
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
+     * @Groups({"users_by_customer","show_user"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"users_by_customer","show_user"})
+     * Assert\NotBlank(groups={"create_customer"})
      */
     private $fullname;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"users_by_customer", "create_user"})
+     * @Assert\NotBlank
      */
     private $username;
-
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
-    private $password;
-    //, cascade={"persist"}
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\User", mappedBy="customer", cascade={"persist"})
      */
