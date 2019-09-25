@@ -3,8 +3,12 @@
 namespace App\Repository;
 
 use App\Entity\Product;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Query;
+use Doctrine\ORM\Tools\Pagination\Paginator;
+use Symfony\Bridge\Doctrine\RegistryInterface;
 use Doctrine\Common\Persistence\ManagerRegistry;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+
 
 /**
  * @method Product|null find($id, $lockMode = null, $lockVersion = null)
@@ -14,37 +18,24 @@ use Doctrine\Common\Persistence\ManagerRegistry;
  */
 class ProductRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    public function __construct(RegistryInterface $registry)
     {
         parent::__construct($registry, Product::class);
     }
+    // public function createFindAllQuery()
+    // {
+    //     return $this->_em->getRepository('AppBundle:BlogPost')->createQueryBuilder('bp');
+    // }
 
-    // /**
-    //  * @return Product[] Returns an array of Product objects
-    //  */
-    /*
-    public function findByExampleField($value)
+   /**
+    * this function return the Query of select all product
+    *
+    * @return Query
+    */
+    public function findAllProductQuery():Query
     {
-        return $this->createQueryBuilder('p')
-            ->andWhere('p.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('p.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
+        return $this->createQueryBuilder('bp')
+        ->getQuery()
         ;
     }
-    */
-
-    /*
-    public function findOneBySomeField($value): ?Product
-    {
-        return $this->createQueryBuilder('p')
-            ->andWhere('p.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
-    }
-    */
 }

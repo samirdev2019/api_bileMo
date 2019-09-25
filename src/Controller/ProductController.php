@@ -3,6 +3,8 @@ namespace App\Controller;
 
 use App\Entity\Product;
 use App\Repository\ProductRepository;
+use Knp\Component\Pager\PaginatorInterface;
+use Symfony\Component\HttpFoundation\Request;
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\HttpFoundation\Response;
 use FOS\RestBundle\Controller\FOSRestController;
@@ -14,8 +16,13 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 
-class ProductController extends FOSRestController
+class ProductController extends AbstractController
 {
+    private $repository;
+    public function __construct(ProductRepository $repository)
+    {
+        $this->repository = $repository;
+    }
     /**
      * @Rest\Get(
      *     path = "/products/{id}",
@@ -53,18 +60,35 @@ class ProductController extends FOSRestController
             )]
         );
     }
+    // /**
+    //  * Undocumented function
+    //  *
+    //  * @param ProductRepository $productRepository
+    //  * @return JsonResponse
+    //  * @Route("/products", name="app_list_products", methods={"GET"})
+    //  */
+    // public function listGetAction(SerializerInterface $serializer,ProductRepository $productRepository)
+    // { 
+    //      $data = $serializer->serialize($productRepository->findAll(), 'json');
+    //      $response = new Response($data);
+    //      $response->headers->set('Content-Type', 'application/json');
+    //      return $response;
+    // } 
     /**
-     * Undocumented function
-     *
-     * @param ProductRepository $productRepository
-     * @return JsonResponse
-     * @Route("/products", name="app_list_products", methods={"GET"})
+     * @Route("/products", name="list_product_page", methods={"GET"})
      */
-    public function listGetAction(SerializerInterface $serializer,ProductRepository $productRepository)
-    { 
-         $data = $serializer->serialize($productRepository->findAll(), 'json');
-         $response = new Response($data);
-         $response->headers->set('Content-Type', 'application/json');
-         return $response;
-    }        
+    public function listGetAction(Request $request, PaginatorInterface $paginator)
+    {
+         $queryBuilder = $this->repository->findAllProductQuery();
+        
+        if ($request->query->getAlnum('filter')) {
+            $products->where('bp.mark LIKE :mark')
+                ->setParameter('mark', '%' . $request->query->getAlnum('filter') . '%');
+        }
+        return $paginator->paginate(
+            $queryBuilder,
+            $request->query->getInt('page', 1),
+            $request->query->getInt('limit', 3)
+        );
+    }
 }
