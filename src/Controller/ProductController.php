@@ -15,8 +15,6 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\Validator\ConstraintViolationList;
 
-
-
 class ProductController extends FOSRestController
 {
     private $repository;
@@ -101,7 +99,7 @@ class ProductController extends FOSRestController
         return $paginator->paginate(
             $queryBuilder,
             $request->query->getInt('page', 1),
-            $request->query->getInt('limit', 3)
+            $request->query->getInt('limit', 5)
         );
     }
 }
