@@ -18,6 +18,20 @@ fos_rest:
     rules:
       - { path: '^/', prefer_extension: true, fallback_format: 'json', priorities: ['json'] }
   param_fetcher_listener: force
+  exception:
+      enabled: true
+      exception_controller: 'fos_rest.exception.controller:showAction'
+      codes:
+        App\Exception\ResourceValidationException: 400
+        App\Exception\EntityNotFoundException: 404
+        # \LogicException: 400
+        # \DomainException: 400
+      messages:
+        App\Exception\ResourceValidationException: true
+        App\Exception\EntityNotFoundException: true
+        # Doctrine\ORM\EntityNotFoundException: true
+        # \LogicException: true
+        # \DomainException: true
 #    param_fetcher_listener:  true
 #    allowed_methods_listener:  true
 #    routing_loader: true

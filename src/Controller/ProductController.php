@@ -3,20 +3,21 @@ namespace App\Controller;
 
 use App\Entity\Product;
 use App\Repository\ProductRepository;
+use App\Exception\EntityNotFoundException;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Component\HttpFoundation\Request;
+use App\Exception\ResourceValidationException;
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\HttpFoundation\Response;
 use FOS\RestBundle\Controller\FOSRestController;
 use FOS\RestBundle\Controller\Annotations as Rest;
-use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\Serializer\SerializerInterface;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
+use Symfony\Component\Validator\ConstraintViolationList;
 
-class ProductController extends AbstractController
+
+
+class ProductController extends FOSRestController
 {
     private $repository;
     public function __construct(ProductRepository $repository)
@@ -33,8 +34,13 @@ class ProductController extends AbstractController
      *          statusCode = 200
      * )
      */
-    public function showAction(Product $product)
+    public function showAction($id)
     {
+        $product = $this->repository->findOneBy(['id' => $id]);
+        // 404 response - Resource not found
+        if (!$product) {   
+            throw new EntityNotFoundException("This product with Id: $id is not found, try with an other product id please");   
+        }
         return $product;
     }
     /**
@@ -42,15 +48,31 @@ class ProductController extends AbstractController
      *      path = "/products",
      *      name = "app_product_create"
      * )
-     * @Rest\View(StatusCode = 201)
-     * @ParamConverter("product", converter="fos_rest.request_body")
+     * @Rest\View(
+     * StatusCode = Response::HTTP_CREATED, serializerGroups={"create_product"})
+     * @ParamConverter(
+     *     "product",
+     *     converter="fos_rest.request_body",
+     *     options={
+     *         "validator"={ "groups"="create_product" }
+     *     }
+     * )
      */
-    public function createAction(Product $product, ObjectManager $em)
+    public function createAction(Product $product, ObjectManager $em, ConstraintViolationList $violations)
     {
+        if (count($violations)) {
+            $message = 'The JSON sent contains invalid data. Here are the errors you need to correct: ';
+            foreach ($violations as $violation) {
+                $message .= sprintf("Field %s: %s ", $violation->getPropertyPath(), $violation->getMessage());
+            }
+
+            throw new ResourceValidationException($message);
+        }
         $em->persist($product);
         $em->flush(); 
-       return $this->view(
-           '',
+        
+        return $this->view(
+           $product,
            Response::HTTP_CREATED,
            ['Location' => $this->generateUrl(
                 'app_product_show', 
@@ -60,22 +82,13 @@ class ProductController extends AbstractController
             )]
         );
     }
-    // /**
-    //  * Undocumented function
-    //  *
-    //  * @param ProductRepository $productRepository
-    //  * @return JsonResponse
-    //  * @Route("/products", name="app_list_products", methods={"GET"})
-    //  */
-    // public function listGetAction(SerializerInterface $serializer,ProductRepository $productRepository)
-    // { 
-    //      $data = $serializer->serialize($productRepository->findAll(), 'json');
-    //      $response = new Response($data);
-    //      $response->headers->set('Content-Type', 'application/json');
-    //      return $response;
-    // } 
     /**
-     * @Route("/products", name="list_product_page", methods={"GET"})
+     * @Rest\Get(
+     *      path = "/products",
+     *      name = "app_product_list"
+     * )
+     * @Rest\View(
+     * StatusCode = Response::HTTP_OK, serializerGroups={"list_product"})
      */
     public function listGetAction(Request $request, PaginatorInterface $paginator)
     {
