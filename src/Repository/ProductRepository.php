@@ -22,10 +22,6 @@ class ProductRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Product::class);
     }
-    // public function createFindAllQuery()
-    // {
-    //     return $this->_em->getRepository('AppBundle:BlogPost')->createQueryBuilder('bp');
-    // }
 
    /**
     * this function return the Query of select all product
