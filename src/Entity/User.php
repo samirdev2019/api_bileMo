@@ -37,7 +37,7 @@ class User
 
     /**
      * @ORM\Column(type="date", nullable=true)
-     * @Groups({"list_users", "get_user"})
+     * @Groups({"list_users"})
      * @Assert\NotBlank(groups={"create_user"})
      */
     private $birthDay;
