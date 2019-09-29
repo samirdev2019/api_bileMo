@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Entity\Customer;
+use FOS\RestBundle\View\View;
 use App\Repository\UserRepository;
 use App\Repository\CustomerRepository;
 use App\Exception\EntityNotFoundException;
@@ -112,13 +113,22 @@ class UserController extends FOSRestController
      * Undocumented function
      *
      * @param integer $id
-     * @return Response
+     * @return View
      * @Rest\Delete(
      *     path = "/users/{id}",
      *     name = "app_user_create",
      * )
     */
-    
+    public function deleteUsersAction(int $id)
+    {
+        $user = $this->userRepository->findOneBy(['id' => $id]);
+        if($user) {
+            $this->em->remove($user);
+            $this->em->flush();
+        }
+       
+        return $this->view(null,Response::HTTP_NO_CONTENT);
+    }
     public function getSerializer()
     {
         $defaultContext = [
