@@ -3,8 +3,12 @@
 namespace App\Repository;
 
 use App\Entity\Product;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Query;
+use Doctrine\ORM\Tools\Pagination\Paginator;
+use Symfony\Bridge\Doctrine\RegistryInterface;
 use Doctrine\Common\Persistence\ManagerRegistry;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+
 
 /**
  * @method Product|null find($id, $lockMode = null, $lockVersion = null)
@@ -14,8 +18,20 @@ use Doctrine\Common\Persistence\ManagerRegistry;
  */
 class ProductRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    public function __construct(RegistryInterface $registry)
     {
         parent::__construct($registry, Product::class);
+    }
+
+   /**
+    * this function return the Query of select all product
+    *
+    * @return Query
+    */
+    public function findAllProductQuery():Query
+    {
+        return $this->createQueryBuilder('bp')
+        ->getQuery()
+        ;
     }
 }

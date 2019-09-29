@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\ProductRepository")
@@ -13,81 +15,99 @@ class Product
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
+     * @Groups("list_product")
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank(groups={"show_product","create_product"})
+     * @Groups("list_product")
      */
     private $mark;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank(groups={"list_product","show_product","create_product"})
+     * @Groups("list_product")
      */
     private $reference;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank(groups={"show_product","create_product"})
      */
     private $storageCapacityROM;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank(groups={"show_product","create_product"})
      */
     private $memory;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Assert\NotBlank(groups={"show_product","create_product"})
      */
     private $maxMemoryCard;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank(groups={"show_product","create_product"})
      */
     private $screenSize;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Assert\NotBlank(groups={"show_product","create_product"})
      */
     private $principalCameraResolution;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Assert\NotBlank(groups={"show_product","create_product"})
      */
     private $secondCameraResolution;
 
     /**
      * @ORM\Column(type="boolean", nullable=true)
+     * @Assert\NotBlank(groups={"show_product","create_product"})
      */
     private $color;
 
     /**
      * @ORM\Column(type="decimal", precision=6, scale=2, nullable=true)
+     * @Assert\NotBlank(groups={"show_product","create_product"})
      */
     private $price;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank(groups={"show_product","create_product"})
      */
     private $operatingSystem;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Assert\NotBlank(groups={"show_product","create_product"})
      */
     private $processor;
 
     /**
+     * @Assert\NotBlank(groups={"show_product","create_product"})
      * @ORM\Column(type="datetime", nullable=true)
      */
     private $createdAt;
 
     /**
      * @ORM\Column(type="text", nullable=true)
+     * @Assert\NotBlank(groups={"show_product","create_product"})
      */
     private $description;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Assert\NotBlank(groups={"show_product","create_product"})
      */
     private $imageUrl;
 
