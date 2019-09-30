@@ -88,7 +88,7 @@ class UserController extends FOSRestController
      *     "user",
      *     converter="fos_rest.request_body",
      *     options={
-     *         "validator"={ "groups"="creqate_user" }
+     *         "validator"={ "groups"="create_user" }
      *     }
      * )
     */
@@ -140,6 +140,27 @@ class UserController extends FOSRestController
        
         return $this->view(null,Response::HTTP_NO_CONTENT);
     }
+    
+     /**
+     * This method allows to view the collection of registered users linked to a customer on the website
+     * via the method GET returns the collection and a status code 200  
+     *
+     * @param integer $id
+     * @return void
+     * @Rest\Get(
+     *     path = "/customers/{id}/users",
+     *     name = "app_get_users"
+     * )
+     */
+    public function getCostomersUsersAction(int $id)
+    {
+        $customer = $this->customerRepository->findOneBy(['id'=>$id]);
+        $serializer = $this->getSerializer();
+        $data = $serializer->serialize($customer->getUsers(), 'json',['groups' => 'users_by_customer']);
+        $response = new Response($data, Response::HTTP_OK);
+        $response->headers->set('Content-Type', 'applications/json');
+        return $response;  
+    }  
 
     /**
      * This method allows us to initialize our serializer to avoid

@@ -23,8 +23,8 @@ class User
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"users_by_customer", "show_user", "create_user"})
-     * @Assert\NotBlank
+     * @Groups({"users_by_customer", "show_user"})
+     * @Assert\NotBlank(groups={"create_user"})
      */
     private $firstName;
 
@@ -37,44 +37,44 @@ class User
 
     /**
      * @ORM\Column(type="date", nullable=true)
-     * @Groups({"list_users"})
+     * @Groups({"show_user"})
      * @Assert\NotBlank(groups={"create_user"})
      */
     private $birthDay;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
-     * @Groups({"users_by_customer", "show_user","create_user"})
-     * @Assert\NotBlank
+     * @Groups({"show_user","create_user"})
+     * @Assert\NotBlank(groups={"create_user"})
      */
     private $address;
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      * @Groups({"users_by_customer", "show_user","create_user"})
-     * @Assert\NotBlank
+     * @Assert\NotBlank(groups={"create_user"})
      */
     private $city;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      * @Groups({"users_by_customer", "show_user", "create_user"})
-     * @Assert\NotBlank
+     * @Assert\NotBlank(groups={"create_user"})
      * @Assert\Email(message="The email '{{value}}' is not a valid email",
-     * checkMX = true)
+     * checkMX = true,groups={"create_user"})
      */
     private $email;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
-     * @Groups({"users_by_customer", "show_user"})
+     * @Groups({"show_user"})
      */
     private $mobileNumber;
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Customer", inversedBy="users", cascade={"persist"})
      * @ORM\JoinColumn(nullable=false)
      * @ORM\JoinColumn(name="id",                referencedColumnName="id")
-     * @Groups({"users_by_customer","list_users", "show_user"})
-     * @Assert\NotBlank
+     * @Groups({"show_user"})
+     * @Assert\NotBlank(groups={"create_user"})
      */
     private $customer;
 
