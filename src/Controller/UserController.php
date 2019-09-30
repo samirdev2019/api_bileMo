@@ -44,14 +44,22 @@ class UserController extends FOSRestController
         $this->customerRepository = $customerRepository;
         $this->em = $em;
     }
-     /**
-     * @Rest\Get(
-     *     path = "/users/{id}",
-     *     name = "app_user_show",
-     *     requirements = {"id"="\d+"}
-     * )
-     *  @Rest\View(statusCode = 200, serializerGroups={"show_user"})
-     */
+   
+    /**
+      * this method allows to read from a resource via the HTTP method GET
+      * returns the resource in the body and a status code 200
+      * if the user not found it generate an exception with the code status 4O4
+      *
+      * @param int $id the identifier of user
+      * @return Response
+      *
+      * @Rest\Get(
+      *     path = "/users/{id}",
+      *     name = "app_user_show",
+      *     requirements = {"id"="\d+"}
+      * )
+      *  @Rest\View(statusCode = 200, serializerGroups={"show_user"})
+    */
     public function getUserAction($id):Response
     {  
         $user = $this->userRepository->findOneBy(['id' => $id]);
@@ -66,11 +74,15 @@ class UserController extends FOSRestController
         return $response;
     }
     /**
-     * @Rest\Post(
-     *     path = "/users",
-     *     name = "app_user_create",
-     * )
+     * This method allows to create a resource "user" via the method HTTP POST
+     *  returns the resource in the body and a code status 201, and adds an resource absolute url location to the header 
      * 
+     * @param User $user
+     * @param Request $request
+     * @param ConstraintViolationList $violations
+     * @return View
+     * 
+     * @Rest\Post(path = "/users",name = "app_user_create")
      * @Rest\View(StatusCode = Response::HTTP_CREATED, serializerGroups={"create_user"})
      * @ParamConverter(
      *     "user",
@@ -80,6 +92,7 @@ class UserController extends FOSRestController
      *     }
      * )
     */
+
     public function postUserAction(User $user, Request $request,ConstraintViolationList $violations)
     {
         if (count($violations)) {
@@ -110,14 +123,12 @@ class UserController extends FOSRestController
         );
     }
     /**
-     * Undocumented function
+     * this method allows to delete a resource "user" via the HTTP method DELETE
+     *  returns an empty body and a status code 204
      *
      * @param integer $id
      * @return View
-     * @Rest\Delete(
-     *     path = "/users/{id}",
-     *     name = "app_user_create",
-     * )
+     * @Rest\Delete(path = "/users/{id}",name = "app_user_delete" )
     */
     public function deleteUsersAction(int $id)
     {
@@ -129,6 +140,13 @@ class UserController extends FOSRestController
        
         return $this->view(null,Response::HTTP_NO_CONTENT);
     }
+
+    /**
+     * This method allows us to initialize our serializer to avoid
+     *  the circular reference problem
+     *
+     * @return Serializer $serializer
+     */
     public function getSerializer()
     {
         $defaultContext = [
