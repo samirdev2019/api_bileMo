@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Form\UserType;
 use App\Entity\Customer;
 use FOS\RestBundle\View\View;
 use App\Repository\UserRepository;
@@ -58,7 +59,6 @@ class UserController extends FOSRestController
       *     name = "app_user_show",
       *     requirements = {"id"="\d+"}
       * )
-      *  @Rest\View(statusCode = 200, serializerGroups={"show_user"})
     */
     public function getUserAction($id):Response
     {  
@@ -125,12 +125,14 @@ class UserController extends FOSRestController
     /**
      * this method allows to delete a resource "user" via the HTTP method DELETE
      *  returns an empty body and a status code 204
+     * I have not thrown an exception here, in the case where the object dn't
+     * exist; as the customer want to remove the object,a no content response will be sent
      *
      * @param integer $id
      * @return View
      * @Rest\Delete(path = "/users/{id}",name = "app_user_delete" )
     */
-    public function deleteUsersAction(int $id)
+    public function deleteUsersAction(int $id): View
     {
         $user = $this->userRepository->findOneBy(['id' => $id]);
         if($user) {
@@ -151,31 +153,57 @@ class UserController extends FOSRestController
      *     path = "/customers/{id}/users",
      *     name = "app_get_users"
      * )
+     * @Rest\View(StatusCode = Response::HTTP_OK, serializerGroups={"users_by_customer"})
      */
     public function getCostomersUsersAction(int $id)
     {
         $customer = $this->customerRepository->findOneBy(['id'=>$id]);
-        $serializer = $this->getSerializer();
-        $data = $serializer->serialize($customer->getUsers(), 'json',['groups' => 'users_by_customer']);
-        $response = new Response($data, Response::HTTP_OK);
-        $response->headers->set('Content-Type', 'applications/json');
-        return $response;  
-    }  
-
-    /**
-     * This method allows us to initialize our serializer to avoid
-     *  the circular reference problem
-     *
-     * @return Serializer $serializer
-     */
-    public function getSerializer()
-    {
-        $defaultContext = [
-            AbstractNormalizer::CIRCULAR_REFERENCE_HANDLER =>
-             function ($object, $format, $context) { return $object->getId();},];
-            $normalizer = new ObjectNormalizer($this->classMetadataFactory, null, null, null, null, null, $defaultContext);
-            $serializer = new Serializer([$normalizer], [$this->encoder]);
-            return $serializer;
+        return $customer->getUsers();
+        // $customer = $this->customerRepository->findOneBy(['id'=>$id]);
+        // $serializer = $this->getSerializer();
+        // $data = $serializer->serialize($customer->getUsers(), 'json',['groups' => 'users_by_customer']);
+        // $response = new Response($data, Response::HTTP_OK);
+        // $response->headers->set('Content-Type', 'applications/json');
+        // return $response;  
     }
+    /**
+     * @Rest\Put(path = "/users/{id}", name = "app_user_update")
+     * @Rest\View(StatusCode = Response::HTTP_OK, serializerGroups={"update_user"})
+     */
+    public function updateUserAction(Request $request, int $id)
+    {
+        $user = $this->userRepository->findOneBy(['id' => $id]);
+        if (!$user) {
+            throw new EntityNotFoundException("you want update the user with Id: $id but is not found, try with an other user id please !");   
+        }
+        $form = $this->createForm(UserType::class, $user);
+        
+        $form->submit($request->request->all(),false);
+       
+        if ($form->isValid()) {
+            $this->em->flush();
+            return $user;
+        } else {
+            return $form;
+        }
+    }
+        
+   
+
+    // /**
+    //  * This method allows us to initialize our serializer to avoid
+    //  *  the circular reference problem
+    //  *
+    //  * @return Serializer $serializer
+    //  */
+    // public function getSerializer()
+    // {
+    //     $defaultContext = [
+    //         AbstractNormalizer::CIRCULAR_REFERENCE_HANDLER =>
+    //          function ($object, $format, $context) { return $object->getId();},];
+    //         $normalizer = new ObjectNormalizer($this->classMetadataFactory, null, null, null, null, null, $defaultContext);
+    //         $serializer = new Serializer([$normalizer], [$this->encoder]);
+    //         return $serializer;
+    // }
     
 }

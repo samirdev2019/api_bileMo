@@ -17,20 +17,20 @@ class User
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
-     * @Groups({"users_by_customer","show_user"})
+     * @Groups({"users_by_customer","show_user","update_user"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"users_by_customer", "show_user"})
+     * @Groups({"users_by_customer", "show_user","update_user"})
      * @Assert\NotBlank(groups={"create_user"})
      */
     private $firstName;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"users_by_customer", "show_user","create_user"})
+     * @Groups({"users_by_customer", "show_user","update_user"})
      * @Assert\NotBlank(groups={"create_user"})
      */
     private $lastName;
@@ -44,20 +44,20 @@ class User
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
-     * @Groups({"show_user","create_user"})
+     * @Groups({"show_user","create_user","update_user"})
      * @Assert\NotBlank(groups={"create_user"})
      */
     private $address;
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
-     * @Groups({"users_by_customer", "show_user","create_user"})
+     * @Groups({"users_by_customer", "show_user","update_user"})
      * @Assert\NotBlank(groups={"create_user"})
      */
     private $city;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
-     * @Groups({"users_by_customer", "show_user", "create_user"})
+     * @Groups({"users_by_customer", "show_user","update_user"})
      * @Assert\NotBlank(groups={"create_user"})
      * @Assert\Email(message="The email '{{value}}' is not a valid email",
      * checkMX = true,groups={"create_user"})
@@ -66,14 +66,14 @@ class User
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
-     * @Groups({"show_user"})
+     * @Groups({"show_user","update_user"})
      */
     private $mobileNumber;
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Customer", inversedBy="users", cascade={"persist"})
      * @ORM\JoinColumn(nullable=false)
      * @ORM\JoinColumn(name="id",                referencedColumnName="id")
-     * @Groups({"show_user"})
+     * @Groups({"show_user","update_user"})
      * @Assert\NotBlank(groups={"create_user"})
      */
     private $customer;

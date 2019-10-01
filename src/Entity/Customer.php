@@ -22,13 +22,13 @@ class Customer
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
-     * @Groups({"users_by_customer","show_user"})
+     * @Groups({"users_by_customer","show_user","update_user"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"users_by_customer","show_user"})
+     * @Groups({"users_by_customer","show_user","update_user"})
      * Assert\NotBlank(groups={"create_customer"})
      */
     private $fullname;
@@ -40,7 +40,7 @@ class Customer
      */
     private $username;
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\User", mappedBy="customer", cascade={"persist"})
+     * @ORM\OneToMany(targetEntity="App\Entity\User", mappedBy="customer", cascade={"persist","REMOVE"})
      */
     private $users;
 
