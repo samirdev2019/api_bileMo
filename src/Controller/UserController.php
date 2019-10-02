@@ -9,6 +9,7 @@ use FOS\RestBundle\View\View;
 use App\Repository\UserRepository;
 use App\Repository\CustomerRepository;
 use App\Exception\EntityNotFoundException;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Component\Serializer\Serializer;
 use Symfony\Component\HttpFoundation\Request;
 use App\Exception\ResourceValidationException;
@@ -155,16 +156,30 @@ class UserController extends FOSRestController
      * )
      * @Rest\View(StatusCode = Response::HTTP_OK, serializerGroups={"users_by_customer"})
      */
-    public function getCostomersUsersAction(int $id)
+    public function getCostomersUsersAction(Request $request, int $id, PaginatorInterface $paginator)
     {
-        $customer = $this->customerRepository->findOneBy(['id'=>$id]);
-        return $customer->getUsers();
-        // $customer = $this->customerRepository->findOneBy(['id'=>$id]);
-        // $serializer = $this->getSerializer();
-        // $data = $serializer->serialize($customer->getUsers(), 'json',['groups' => 'users_by_customer']);
-        // $response = new Response($data, Response::HTTP_OK);
-        // $response->headers->set('Content-Type', 'applications/json');
-        // return $response;  
+        $queryBuilder = $this->userRepository->findAllByCustomerIdQuery($id);
+        
+        $paginated =  $paginator->paginate(
+            $queryBuilder,
+            $request->query->getInt('page', 1),
+            $request->query->getInt('limit', 5)
+        );
+    
+        $serializer = $this->get('serializer');
+        $data = $serializer->serialize([
+            'meta' => [
+                [
+                    'currentPageNumber' => $paginated->getCurrentPageNumber(),
+                    'numberItems' => $paginated->getItemNumberPerPage(),
+                    'totalItemCount' => $paginated->getTotalItemCount(),
+
+                ]],
+            'data' => $paginated->getItems()
+        ], 'json',['groups' => 'users_by_customer']);
+
+
+       return new Response($data); 
     }
     /**
      * @Rest\Put(path = "/users/{id}", name = "app_user_update")
