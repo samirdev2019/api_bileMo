@@ -8,6 +8,7 @@ use App\Entity\Customer;
 use FOS\RestBundle\View\View;
 use App\Repository\UserRepository;
 use App\Repository\CustomerRepository;
+use JMS\Serializer\SerializationContext;
 use App\Exception\EntityNotFoundException;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Component\Serializer\Serializer;
@@ -60,18 +61,18 @@ class UserController extends FOSRestController
       *     name = "app_user_show",
       *     requirements = {"id"="\d+"}
       * )
+      * @Rest\View(StatusCode = Response::HTTP_CREATED, serializerGroups={"show_user"})
     */
-    public function getUserAction($id):Response
+    public function getUserAction($id)
     {  
         $user = $this->userRepository->findOneBy(['id' => $id]);
         
         if (!$user) {
             throw new EntityNotFoundException("This user with Id: $id is not found, try with an other user id please");   
         }
-        $serializer = $this->getSerializer();
-        $data = $serializer->serialize($user, 'json', ['groups' => 'show_user']);
-        $response = new Response($data,Response::HTTP_OK);
-        $response->headers->set('Content-Type', 'application/json');
+         $data = $this->get('jms_serializer')->serialize($user, 'json');
+         $response = new Response($data,Response::HTTP_OK);
+         $response->headers->set('Content-Type', 'application/json');
         return $response;
     }
     /**
@@ -106,7 +107,7 @@ class UserController extends FOSRestController
         }
         $customer = new Customer();
         $data = $request->getContent();
-        $user = $this->get('serializer')
+        $user = $this->get('jms_serializer')
         ->deserialize($data,User::class, 'json');
         $customer = $this->customerRepository->findOneByUsername($user->getCustomer()->getUsername());
         $user->setCustomer($customer);
@@ -160,26 +161,24 @@ class UserController extends FOSRestController
     {
         $queryBuilder = $this->userRepository->findAllByCustomerIdQuery($id);
         
-        $paginated =  $paginator->paginate(
+        $pagination =  $paginator->paginate(
             $queryBuilder,
             $request->query->getInt('page', 1),
             $request->query->getInt('limit', 5)
         );
-    
-        $serializer = $this->get('serializer');
-        $data = $serializer->serialize([
-            'meta' => [
-                [
-                    'currentPageNumber' => $paginated->getCurrentPageNumber(),
-                    'numberItems' => $paginated->getItemNumberPerPage(),
-                    'totalItemCount' => $paginated->getTotalItemCount(),
-
-                ]],
-            'data' => $paginated->getItems()
-        ], 'json',['groups' => 'users_by_customer']);
-
-
-       return new Response($data); 
+        $result = array(
+            'data' => $pagination->getItems(),
+            'meta' => $pagination->getPaginationData());
+            $serializer = $this->get('jms_serializer');
+          return new Response(
+              $serializer->serialize(
+                  $result,
+                  'json',
+                  SerializationContext::create()->setGroups(['users_by_customer'])
+              ),
+              Response::HTTP_OK,
+              ['Content-Type' => 'application/json',]
+          );
     }
     /**
      * @Rest\Put(path = "/users/{id}", name = "app_user_update")
