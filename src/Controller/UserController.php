@@ -5,13 +5,11 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Form\UserType;
 use App\Entity\Customer;
-use FOS\RestBundle\View\View;
 use App\Repository\UserRepository;
 use App\Repository\CustomerRepository;
 use JMS\Serializer\SerializationContext;
 use App\Exception\EntityNotFoundException;
 use Knp\Component\Pager\PaginatorInterface;
-use Symfony\Component\Serializer\Serializer;
 use Symfony\Component\HttpFoundation\Request;
 use App\Exception\ResourceValidationException;
 use Doctrine\Common\Persistence\ObjectManager;
@@ -19,33 +17,28 @@ use Symfony\Component\HttpFoundation\Response;
 use FOS\RestBundle\Controller\FOSRestController;
 use Doctrine\Common\Annotations\AnnotationReader;
 use FOS\RestBundle\Controller\Annotations as Rest;
-use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Validator\ConstraintViolationList;
-use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
-use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
-use Symfony\Component\Serializer\Mapping\Loader\AnnotationLoader;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
-use Symfony\Component\Serializer\Mapping\Factory\ClassMetadataFactory;
-
+use JMS\Serializer\SerializerInterface; 
 
 class UserController extends FOSRestController
 {
-    private $classMetadataFactory;
-    private $encoder;
     private $userRepository;
     private $em;
     private $customerRepository;
+    private $serializer;
     public function __construct(
+        SerializerInterface $serializer,
         UserRepository $userRepository,
         ObjectManager $em,
         CustomerRepository $customerRepository
     ) {
-        $this->classMetadataFactory = new ClassMetadataFactory(new AnnotationLoader(new AnnotationReader()));
-        $this->encoder = new JsonEncoder();
         $this->userRepository = $userRepository;
         $this->customerRepository = $customerRepository;
         $this->em = $em;
+        $this->serializer = $serializer;
+
     }
    
     /**
@@ -70,7 +63,7 @@ class UserController extends FOSRestController
         if (!$user) {
             throw new EntityNotFoundException("This user with Id: $id is not found, try with an other user id please");   
         }
-         $data = $this->get('jms_serializer')->serialize($user, 'json');
+         $data = $this->serializer->serialize($user, 'json');
          $response = new Response($data,Response::HTTP_OK);
          $response->headers->set('Content-Type', 'application/json');
         return $response;
@@ -107,8 +100,7 @@ class UserController extends FOSRestController
         }
         $customer = new Customer();
         $data = $request->getContent();
-        $user = $this->get('jms_serializer')
-        ->deserialize($data,User::class, 'json');
+        $user = $this->serializer->deserialize($data,User::class, 'json');
         $customer = $this->customerRepository->findOneByUsername($user->getCustomer()->getUsername());
         $user->setCustomer($customer);
         
@@ -169,9 +161,9 @@ class UserController extends FOSRestController
         $result = array(
             'data' => $pagination->getItems(),
             'meta' => $pagination->getPaginationData());
-            $serializer = $this->get('jms_serializer');
+           
           return new Response(
-              $serializer->serialize(
+              $this->serializer->serialize(
                   $result,
                   'json',
                   SerializationContext::create()->setGroups(['users_by_customer'])
@@ -190,10 +182,8 @@ class UserController extends FOSRestController
         if (!$user) {
             throw new EntityNotFoundException("you want update the user with Id: $id but is not found, try with an other user id please !");   
         }
-        $form = $this->createForm(UserType::class, $user);
-        
+        $form = $this->createForm(UserType::class, $user);  
         $form->submit($request->request->all(),false);
-       
         if ($form->isValid()) {
             $this->em->flush();
             return $user;
@@ -201,23 +191,4 @@ class UserController extends FOSRestController
             return $form;
         }
     }
-        
-   
-
-    // /**
-    //  * This method allows us to initialize our serializer to avoid
-    //  *  the circular reference problem
-    //  *
-    //  * @return Serializer $serializer
-    //  */
-    // public function getSerializer()
-    // {
-    //     $defaultContext = [
-    //         AbstractNormalizer::CIRCULAR_REFERENCE_HANDLER =>
-    //          function ($object, $format, $context) { return $object->getId();},];
-    //         $normalizer = new ObjectNormalizer($this->classMetadataFactory, null, null, null, null, null, $defaultContext);
-    //         $serializer = new Serializer([$normalizer], [$this->encoder]);
-    //         return $serializer;
-    // }
-    
 }
