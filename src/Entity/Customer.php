@@ -8,6 +8,8 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use JMS\Serializer\Annotation as Serializer;
+
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\CustomerRepository")
@@ -15,6 +17,8 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  * fields={"username"},
  * message="The username you have indicated is already in use !"
  * )
+ * @Serializer\ExclusionPolicy("ALL")
+
  */
 class Customer
 {
@@ -22,25 +26,28 @@ class Customer
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
-     * @Groups({"users_by_customer","show_user"})
+     * @Serializer\Groups({"users_by_customer","show_user"})
+     * @Serializer\Expose
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"users_by_customer","show_user"})
+     * @Serializer\Groups({"users_by_customer","show_user"})
      * Assert\NotBlank(groups={"create_customer"})
+     * @Serializer\Expose
      */
     private $fullname;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"users_by_customer", "create_user"})
+     * @Serializer\Groups({"users_by_customer", "create_user"})
      * @Assert\NotBlank
+     * @Serializer\Expose
      */
     private $username;
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\User", mappedBy="customer", cascade={"persist"})
+     * @ORM\OneToMany(targetEntity="App\Entity\User", mappedBy="customer", cascade={"persist","REMOVE"})
      */
     private $users;
 
