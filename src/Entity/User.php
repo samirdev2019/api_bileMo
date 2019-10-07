@@ -129,7 +129,6 @@ class User
      * @ORM\JoinColumn(nullable=false)
      * @ORM\JoinColumn(name="id",                referencedColumnName="id")
      * @Serializer\Groups({"update_user"})
-     * @Assert\NotBlank(groups={"create_user"})
      */
     private $customer;
 
