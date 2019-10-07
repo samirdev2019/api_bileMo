@@ -133,7 +133,6 @@ class User
      */
     private $customer;
 
-
     public function getId(): ?int
     {
         return $this->id;
