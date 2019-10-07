@@ -78,7 +78,7 @@ class UserController extends FOSRestController
      * @return View
      * 
      * @Rest\Post(path = "/users",name = "app_user_create")
-     * @Rest\View(StatusCode = Response::HTTP_CREATED, serializerGroups={"create_user"})
+     * @Rest\View(StatusCode = Response::HTTP_CREATED, serializerGroups={"show_user"})
      * @ParamConverter(
      *     "user",
      *     converter="fos_rest.request_body",
@@ -89,7 +89,8 @@ class UserController extends FOSRestController
     */
 
     public function postUserAction(User $user, Request $request,ConstraintViolationList $violations)
-    {
+    {  // dump($request->get('customer'));die;
+        //dump($this->getUser()); die;
         if (count($violations)) {
             $message = 'The JSON sent contains invalid data. Here are the errors you need to correct: ';
             foreach ($violations as $violation) {
@@ -100,10 +101,8 @@ class UserController extends FOSRestController
         }
         $customer = new Customer();
         $data = $request->getContent();
-        $user = $this->serializer->deserialize($data,User::class, 'json');
-        $customer = $this->customerRepository->findOneByUsername($user->getCustomer()->getUsername());
-        $user->setCustomer($customer);
-        
+        $user = $this->serializer->deserialize($data,User::class, 'json');        
+        $user->setCustomer($this->getUser());
         $this->em->persist($user);
         $this->em->flush();
         return $this->view(

@@ -41,7 +41,7 @@ class Customer implements UserInterface
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Serializer\Groups({"users_by_customer", "create_user"})
+     * @Serializer\Groups({"users_by_customer"})
      * @Assert\NotBlank
      * @Serializer\Expose
      */
