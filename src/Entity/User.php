@@ -9,6 +9,7 @@ use Hateoas\Configuration\Annotation\Exclusion;
 use Hateoas\Configuration\Annotation as Hateoas;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
+use Swagger\Annotations as SWG;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
@@ -54,7 +55,9 @@ use Symfony\Component\Validator\Constraints as Assert;
  * )
  * @Hateoas\Relation(
  *     "Customer",
- *     embedded = @Hateoas\Embedded("expr(object.getCustomer())")
+ *     embedded = @Hateoas\Embedded("expr(object.getCustomer().getId())"),
+ *     exclusion = @Hateoas\Exclusion(
+ *          groups = {"show_user","update_user"})
  * )
  */
 class User
@@ -63,8 +66,11 @@ class User
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
-     * @Serializer\Groups({"users_by_customer","show_user","update_user"})
+     * @Serializer\Groups({"users_by_customer","show_user"})
      * @Serializer\Expose
+     * 
+     * @var int
+     * @SWG\Property(description="The unique identifier of the user.")
      */
     private $id;
 
@@ -73,6 +79,9 @@ class User
      * @Serializer\Groups({"users_by_customer", "show_user","update_user"})
      * @Assert\NotBlank(groups={"create_user"})
      * @Serializer\Expose
+     * 
+     * @var string
+     * @SWG\Property(description="The first name of the user.")
      */
     private $firstName;
 
@@ -81,6 +90,9 @@ class User
      * @Serializer\Groups({"users_by_customer", "show_user","update_user"})
      * @Assert\NotBlank(groups={"create_user"})
      * @Serializer\Expose
+     * 
+     * @var string
+     * @SWG\Property(description="The last name of the user.")
      */
     private $lastName;
 
@@ -90,6 +102,9 @@ class User
      * @Serializer\Type("DateTime<'Y-m-d'>")
      * @Serializer\Groups({"show_user"})
      * @Serializer\Expose
+     * 
+     * @var DateTime
+     * @SWG\Property(description="The user birth day.")
      */
     private $birthDay;
 
@@ -98,6 +113,9 @@ class User
      * @Serializer\Groups({"show_user","create_user","update_user"})
      * @Assert\NotBlank(groups={"create_user"})
      * @Serializer\Expose
+     * 
+     * @var string
+     * @SWG\Property(description="The user address.")
      */
     private $address;
     /**
@@ -105,6 +123,9 @@ class User
      * @Serializer\Groups({"users_by_customer", "show_user","update_user"})
      * @Assert\NotBlank(groups={"create_user"})
      * @Serializer\Expose
+     * 
+     * @var string
+     * @SWG\Property(description="The user city.")
      */
     private $city;
 
@@ -115,6 +136,9 @@ class User
      * @Assert\Email(message="The email '{{value}}' is not a valid email",
      * checkMX = true,groups={"create_user"})
      * @Serializer\Expose
+     * 
+     * @var string
+     * @SWG\Property(description="The user email.")
      */
     private $email;
 
@@ -122,6 +146,9 @@ class User
      * @ORM\Column(type="string", length=255, nullable=true)
      * @Serializer\Groups({"show_user","update_user"})
      * @Serializer\Expose
+     * 
+     * @var string
+     * @SWG\Property(description="The mobile number.")
      */
     private $mobileNumber;
     /**
@@ -129,6 +156,9 @@ class User
      * @ORM\JoinColumn(nullable=false)
      * @ORM\JoinColumn(name="id",                referencedColumnName="id")
      * @Serializer\Groups({"update_user"})
+     * 
+     * @var array
+     * @SWG\Property(description="The user linked to customer.")
      */
     private $customer;
 

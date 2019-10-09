@@ -5,11 +5,16 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Form\UserType;
 use App\Entity\Customer;
+use Swagger\Annotations as SWG;
+use Swagger\Annotations\Property;
 use App\Repository\UserRepository;
 use App\Repository\CustomerRepository;
 use JMS\Serializer\SerializationContext;
+use JMS\Serializer\SerializerInterface; 
+use Nelmio\ApiDocBundle\Annotation\Model;
 use App\Exception\EntityNotFoundException;
 use Knp\Component\Pager\PaginatorInterface;
+use Nelmio\ApiDocBundle\Annotation\Security;
 use Symfony\Component\HttpFoundation\Request;
 use App\Exception\ResourceValidationException;
 use Doctrine\Common\Persistence\ObjectManager;
@@ -18,9 +23,9 @@ use FOS\RestBundle\Controller\FOSRestController;
 use Doctrine\Common\Annotations\AnnotationReader;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use Symfony\Component\Validator\ConstraintViolationList;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Cache;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
-use JMS\Serializer\SerializerInterface; 
 
 class UserController extends FOSRestController
 {
@@ -42,9 +47,7 @@ class UserController extends FOSRestController
     }
    
     /**
-      * this method allows to read from a resource via the HTTP method GET
-      * returns the resource in the body and a status code 200
-      * if the user not found it generate an exception with the code status 4O4
+      * get user by the identifier 'id'
       *
       * @param int $id the identifier of user
       * @return Response
@@ -55,7 +58,39 @@ class UserController extends FOSRestController
       *     requirements = {"id"="\d+"}
       * )
       * @Rest\View(StatusCode = Response::HTTP_CREATED, serializerGroups={"show_user"})
-    */
+      * @SWG\Response(
+     *     response=200,
+     *     description="OK, Returned when the user is getted",
+     *     @SWG\Schema(ref=@Model(type=User::class))
+     * )
+     * @SWG\Response(
+     *     response="401",
+     *     description="invalid or expired token, you need to have a valid access token or refresh it",
+     *     @SWG\Property(property="message", type="string",
+     *     example="JWT token not found | Expired JWT token"),
+     * )
+     * @SWG\Response(
+     *     response="404",
+     *     description="User not found or does not exist",
+     * )
+     * @SWG\Parameter(
+     *     name="id",
+     *     in="path",
+     *     description="The user identifier.",
+     *     required=true,
+     *     type="integer"
+     * )
+     * @SWG\Parameter(
+     *     name="Authorization",
+     *     in="header",
+     *     default="Bearer Token",
+     *     description="Bearer {your access token}",
+     *     required=true,
+     *     type="string"
+     * )
+     * @SWG\Tag(name="Users")
+     * @Security(name="Bearer")
+     */
     public function getUserAction($id)
     {  
         $user = $this->userRepository->findOneBy(['id' => $id]);
@@ -69,8 +104,8 @@ class UserController extends FOSRestController
         return $response;
     }
     /**
-     * This method allows to create a resource "user" via the method HTTP POST
-     *  returns the resource in the body and a code status 201, and adds an resource absolute url location to the header 
+     * Adds a new user : 
+     *   if created the resource absolute url location will be added to the header 
      * 
      * @param User $user
      * @param Request $request
@@ -86,6 +121,46 @@ class UserController extends FOSRestController
      *         "validator"={ "groups"="create_user" }
      *     }
      * )
+     * 
+     * @SWG\Response(
+     *     response=201,
+     *     description="returned when Created",
+     *     @Model(type=User::class, groups={"update_user"})
+     * )
+     * @SWG\Response(
+     *     response=400,
+     *     description="Bad Request: Returned when a violation is raised by validation",
+     * )
+     * @SWG\Response(
+     *     response="401",
+     *     description="invalid or expired token you need to have a valid access token or refresh it",
+     *     @SWG\Property(property="message", type="string",
+     *     example="JWT token not found | Expired JWT token"),
+     * )
+     * @SWG\Parameter(
+     *     name="Authorization",
+     *     in="header",
+     *     default="Bearer Token",
+     *     description="Bearer {your access token}",
+     *     required=true,
+     *     type="string"
+     * )
+     * @SWG\Parameter(
+     *     name="Content-Type",
+     *     in="header",
+     *     default="application/json",
+     *     description="application/json",
+     *     required=true,
+     *     type="string"
+     * )
+     * @SWG\Parameter(
+     *     name="body",
+     *     in="body",
+     *     @SWG\Schema(type="object",
+     *          @SWG\Property(property="user", ref=@Model(type=User::class, groups={"update_user"})))
+     *)
+     * @SWG\Tag(name="Users")
+     * @Security(name="Bearer")
     */
 
     public function postUserAction(User $user, Request $request,ConstraintViolationList $violations)
@@ -115,16 +190,39 @@ class UserController extends FOSRestController
         );
     }
     /**
-     * this method allows to delete a resource "user" via the HTTP method DELETE
+     * Delete a resource user by id 
      *  returns an empty body and a status code 204
-     * I have not thrown an exception here, in the case where the object dn't
-     * exist; as the customer want to remove the object,a no content response will be sent
      *
      * @param integer $id
      * @return View
      * @Rest\Delete(path = "/users/{id}",name = "app_user_delete" )
+     * 
+     * @SWG\Response(
+     *     response=204,
+     *     description="No content : deleted user",
+     * )
+     * @SWG\Response(
+     *     response=404,
+     *     description="No route found"
+     * )
+     * @SWG\Response(
+     *     response="401",
+     *     description="invalid or expired token you need to have a valid access token or refresh it",
+     *     @SWG\Property(property="message", type="string",
+     *     example="JWT token not found | Expired JWT token"),
+     * )
+     * @SWG\Parameter(
+     *     name="Authorization",
+     *     in="header",
+     *     default="Bearer Token",
+     *     description="Bearer {your access token}",
+     *     required=true,
+     *     type="string"
+     * )
+     * @SWG\Tag(name="Users")
+     * @Security(name="Bearer")
     */
-    public function deleteUsersAction(int $id): View
+    public function deleteUsersAction(int $id)
     {
         $user = $this->userRepository->findOneBy(['id' => $id]);
         if($user) {
@@ -136,8 +234,7 @@ class UserController extends FOSRestController
     }
     
      /**
-     * This method allows to view the collection of registered users linked to a customer on the website
-     * via the method GET returns the collection and a status code 200  
+     * get the list of users linked to a customer
      *
      * @param integer $id
      * @return void
@@ -146,6 +243,43 @@ class UserController extends FOSRestController
      *     name = "app_get_users"
      * )
      * @Rest\View(StatusCode = Response::HTTP_OK, serializerGroups={"users_by_customer"})
+     * 
+      * @SWG\Response(
+     *     response=200,
+     *     description="OK: the users list is returned",
+     *     @SWG\Schema(
+     *         type="array",
+     *         @SWG\Items(ref=@Model(type=User::class, groups={"users_by_customer"}))
+     *     )
+     *     )
+     * @SWG\Response(
+     *     response="401",
+     *     description="invalid or expired token you need to have a valid access token or refresh it",
+     *     @SWG\Property(property="message", type="string",
+     *     example="JWT token not found | Expired JWT token"),
+     * )
+     * @SWG\Parameter(
+     *     name="page",
+     *     in="query",
+     *     type="integer",
+     *     description="The field used to navigate in the list of products"
+     * )
+     * @SWG\Parameter(
+     *     name="limit",
+     *     in="query",
+     *     type="integer",
+     *     description="The field used to fix the number of products per page"
+     * )
+     * @SWG\Parameter(
+     *     name="Authorization",
+     *     in="header",
+     *     default="Bearer Token",
+     *     description="Bearer {your access token}",
+     *     required=true,
+     *     type="string"
+     * )
+     * @SWG\Tag(name="Users")
+     * @Security(name="Bearer")
      */
     public function getCostomersUsersAction(Request $request, int $id, PaginatorInterface $paginator)
     {
@@ -173,6 +307,57 @@ class UserController extends FOSRestController
     /**
      * @Rest\Put(path = "/users/{id}", name = "app_user_update")
      * @Rest\View(StatusCode = Response::HTTP_OK, serializerGroups={"update_user"})
+     * 
+     * @SWG\Response(
+     *     response=200,
+     *     description="returned when Updated",
+     *     @Model(type=User::class, groups={"update_user"})
+     * )
+     * @SWG\Response(
+     *     response=400,
+     *     description="Bad Request: Returned when a violation is raised by validation",
+     * )
+     * @SWG\Response(
+     *     response=404,
+     *     description="you want update the user with not found id !",
+     * )
+     * @SWG\Response(
+     *     response="401",
+     *     description="invalid or expired token you need to have a valid access token or refresh it",
+     *     @SWG\Property(property="message", type="string",
+     *     example="JWT token not found | Expired JWT token"),
+     * )
+     * @SWG\Parameter(
+     *     name="id",
+     *     in="path",
+     *     description="The user id.",
+     *     required=true,
+     *     type="integer"
+     * )
+     * @SWG\Parameter(
+     *     name="Authorization",
+     *     in="header",
+     *     default="Bearer Token",
+     *     description="Bearer {your access token}",
+     *     required=true,
+     *     type="string"
+     * )
+     * @SWG\Parameter(
+     *     name="Content-Type",
+     *     in="header",
+     *     default="application/json",
+     *     description="application/json",
+     *     required=true,
+     *     type="string"
+     * )
+     * @SWG\Parameter(
+     *     name="body",
+     *     in="body",
+     *     @SWG\Schema(type="object",
+     *          @SWG\Property(property="user", ref=@Model(type=User::class, groups={"update_user"})))
+     *)
+     * @SWG\Tag(name="Users")
+     * @Security(name="Bearer")
      */
     public function updateUserAction(Request $request, int $id)
     {
@@ -188,5 +373,6 @@ class UserController extends FOSRestController
         } else {
             return $form;
         }
+        //return$this->handleView($this->view($form->getErrors()));
     }
 }

@@ -2,12 +2,13 @@
 
 namespace App\Entity;
 
+use Nelmio\ApiDocBundle\Annotation\Model;
+use Swagger\Annotations as SWG;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Validator\Constraints as Assert;
+use Swagger\Annotations\Property;
 use JMS\Serializer\Annotation as Serializer;
 use Hateoas\Configuration\Annotation as Hateoas;
-
-
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\ProductRepository")
@@ -39,96 +40,144 @@ class Product
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
      * @Serializer\Groups("list_product")
+     *
+     * @var int
+     * @SWG\Property(description="The unique identifier of the product.")
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
      * @Serializer\Groups({"list_product","show_product"})
+     * 
+     * @var string
+     * @SWG\Property(description="The mark of the product.")
      */
     private $mark;
 
     /**
      * @ORM\Column(type="string", length=255)
      * @Serializer\Groups({"list_product","show_product"})
+     * 
+     * @var string
+     * @SWG\Property(description="The reference of the product.")
      */
     private $reference;
 
     /**
      * @ORM\Column(type="string", length=255)
      * @Serializer\Groups("show_product")
+     * 
+     * @var string
+     * @SWG\Property(description="The storage capacity of the product.")
      */
     private $storageCapacityROM;
 
     /**
      * @ORM\Column(type="string", length=255)
      * @Serializer\Groups("show_product")
+     * 
+     * @var string
+     * @SWG\Property(description="The product read access memory.")
      */
     private $memory;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      * @Serializer\Groups("show_product")
+     *
+     * @var string|null
+     * @SWG\Property(description="The product extesible max memory card.")
      */
     private $maxMemoryCard;
 
     /**
      * @ORM\Column(type="string", length=255)
      * @Serializer\Groups("show_product")
+     * 
+     * @var string
+     * @SWG\Property(description="The product screan size ")
      */
     private $screenSize;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      * @Serializer\Groups("show_product")
+     * 
+     * @var string|null
+     * @SWG\Property(description="The product principal camera resolution: e.g 12Mpx ")
      */
     private $principalCameraResolution;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      * @Serializer\Groups("show_product")
+     * 
+     * @var string|null
+     * @SWG\Property(description="The product second camera resolution: e.g 8Mpx ")
      */
     private $secondCameraResolution;
 
     /**
      * @ORM\Column(type="boolean", nullable=true)
      * @Serializer\Groups("show_product")
+     * 
+     * @var string|null
+     * @SWG\Property(description="true if product have colors")
      */
     private $color;
 
     /**
      * @ORM\Column(type="decimal", precision=6, scale=2, nullable=true)
      * @Serializer\Groups("show_product")
+     * 
+     * @var string|null
+     * @SWG\Property(description="the product price ")
      */
     private $price;
 
     /**
      * @ORM\Column(type="string", length=255)
      * @Serializer\Groups("show_product")
+     * 
+     * @var string
+     * @SWG\Property(description="the operating system e.g :ANDROID")
      */
     private $operatingSystem;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      * @Serializer\Groups("show_product")
+     *
+     * @var string|null
+     * @SWG\Property(description="the processor of product e.g :1.53x2 Ghz")
      */
     private $processor;
 
     /**
      * @Serializer\Groups("show_product")
      * @ORM\Column(type="datetime", nullable=true)
+     * 
+     * @var \DateTimeInterface|null
+     * @SWG\Property(type="string", format="date-time", description="the product publication date")
      */
     private $createdAt;
 
     /**
      * @ORM\Column(type="text", nullable=true)
      * @Serializer\Groups("show_product")
+     * 
+     * @var string|null
+     * @SWG\Property(description="the product description")
      */
     private $description;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      * @Serializer\Groups("show_product")
+     * 
+     * @var string|null
+     * @SWG\Property(description="the URL image of product")
      */
     private $imageUrl;
 

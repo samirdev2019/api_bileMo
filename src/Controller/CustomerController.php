@@ -17,17 +17,17 @@ class CustomerController extends FOSRestController
     {
         $this->encoder = $encoder;
     }
-    /**
-     * Undocumented function
-     *
-     * @param Customer $customer
-     * @return void
-     * @Rest\Get(path ="/customers/{id}", name="app_customer_show")
-     */
-    public function getCustomer(Customer $customer)
-    {
-        return $customer;
-    }
+    // /**
+    //  * Undocumented function
+    //  *
+    //  * @param Customer $customer
+    //  * @return void
+    //  * @Rest\Get(path ="/customers/{id}", name="app_customer_show")
+    //  */
+    // public function getCustomer(Customer $customer)
+    // {
+    //     return $customer;
+    // }
     /**
      * 
      * @return void
