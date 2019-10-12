@@ -14,6 +14,50 @@ nelmio_api_doc:
                 in: header
         security:
             - Bearer: []
+        paths:
+            /login_check:
+                post:
+                    summary: customer authentication
+                    description: Creates a token that allows the user to access protected content
+                    parameters:
+                        - name: credentials 
+                          in: body 
+                          required: true
+                          description: username and password of customer
+                          schema:
+                            type: object
+                            required: [username, password]
+                            properties:
+                                username: 
+                                    type: string
+                                password:
+                                    type: string
+                    responses:
+                        200:
+                            description: "Returns the token and refresh token"
+                        401:
+                            description: "bad credentials"                        
+            /token/refresh:
+                post:
+                    summary: customer authentication
+                    description: refresh the expired token
+                    parameters:
+                        - name: refreshToken 
+                          in: body 
+                          required: true
+                          description: refresh token
+                          schema:
+                            type: object
+                            required: [refreshToken]
+                            properties:
+                                refreshToken:
+                                    type: string
+                    responses:
+                        200:
+                            description: "Returns the token and refresh token"
+                        204:
+                            description: "no content"                         
+                              
     # areas:
     #     path_patterns: # an array of regexps
     #         - ^/api(?!/doc$)

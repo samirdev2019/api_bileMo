@@ -207,7 +207,7 @@ class UserController extends FOSRestController
      * )
      * @SWG\Response(
      *     response="401",
-     *     description="invalid or expired token you need to have a valid access token or refresh it",
+     *     description="Authorization information is missing or invalid.",
      *     @SWG\Property(property="message", type="string",
      *     example="JWT token not found | Expired JWT token"),
      * )

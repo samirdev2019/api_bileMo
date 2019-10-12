@@ -3,6 +3,8 @@
 namespace App\Controller;
 
 use App\Entity\Customer;
+use Swagger\Annotations as SWG;
+use Nelmio\ApiDocBundle\Annotation\Model;
 use Symfony\Component\HttpFoundation\Request;
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\HttpFoundation\Response;
@@ -17,24 +19,7 @@ class CustomerController extends FOSRestController
     {
         $this->encoder = $encoder;
     }
-    // /**
-    //  * Undocumented function
-    //  *
-    //  * @param Customer $customer
-    //  * @return void
-    //  * @Rest\Get(path ="/customers/{id}", name="app_customer_show")
-    //  */
-    // public function getCustomer(Customer $customer)
-    // {
-    //     return $customer;
-    // }
-    /**
-     * 
-     * @return void
-     * 
-     * @Rest\Post(path ="/customers", name="app_customer_create")
-     * @Rest\View()
-     */
+    
     public function register(Request $request,ObjectManager $em)
     {
         $username = $request->request->get('username');
@@ -49,8 +34,9 @@ class CustomerController extends FOSRestController
         $em->flush();
         return New Response(sprintf('Customer %s successfully created', $customer->getUsername()),Response::HTTP_CREATED);
     }
-    public function api()
-    {
-        return new Response(sprintf('Logged in as %s', $this->getUser()->getUsername()));
-    }
+    // public function api()
+    // {
+    //     return new Response(sprintf('Logged in as %s', $this->getUser()->getUsername()));
+    // }
+   
 }

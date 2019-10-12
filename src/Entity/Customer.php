@@ -41,7 +41,7 @@ class Customer implements UserInterface
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Serializer\Groups({"users_by_customer", "create_user"})
+     * @Serializer\Groups({"users_by_customer", "create_user", "customer_login"})
      * @Assert\NotBlank
      * @Serializer\Expose
      */
@@ -49,6 +49,8 @@ class Customer implements UserInterface
     /**
      * @var string The hashed password
      * @ORM\Column(type="string")
+     * @Serializer\Groups({"customer_login"})
+     * @Serializer\Expose
      */
     private $password;
      /**
