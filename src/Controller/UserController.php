@@ -239,7 +239,7 @@ class UserController extends FOSRestController
      * @param integer $id
      * @return void
      * @Rest\Get(
-     *     path = "/customers/{id}/users",
+     *     path = "/users",
      *     name = "app_get_users"
      * )
      * @Rest\View(StatusCode = Response::HTTP_OK, serializerGroups={"users_by_customer"})
@@ -281,9 +281,9 @@ class UserController extends FOSRestController
      * @SWG\Tag(name="Users")
      * @Security(name="Bearer")
      */
-    public function getCostomersUsersAction(Request $request, int $id, PaginatorInterface $paginator)
+    public function getCostomersUsersAction(Request $request, PaginatorInterface $paginator)
     {
-        $queryBuilder = $this->userRepository->findAllByCustomerIdQuery($id);
+        $queryBuilder = $this->userRepository->findAllByCustomerIdQuery($this->getUser()->getId());
         
         $pagination =  $paginator->paginate(
             $queryBuilder,
