@@ -40,4 +40,4 @@ _________
 #### 3- see the API documentation 
 for some raison of configuration it's preferable to use localhost in the place of 127.0.0.1  
 for more information about how to use the bileMo API, you can consult the documentation taping the URL
-http://localhost:8000/api/doc in your browser
+``http://localhost:8000/api/doc ``in your browser
