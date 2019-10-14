@@ -18,4 +18,4 @@ class ProductFunctionalTest extends WebTestCase
         $client->request('GET', '/products');
         $this->assertEquals(401, $client->getResponse()->getStatusCode());
     }
-  }
+}

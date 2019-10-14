@@ -40,7 +40,7 @@ class ProductController extends FOSRestController
      *     requirements = {"id"="\d+"}
      * )
      * @Rest\View(StatusCode = Response::HTTP_OK, serializerGroups={"show_product"})
-     * 
+     *
      * @SWG\Response(
      *     response=200,
      *     description="Returns the product by id",
@@ -78,21 +78,23 @@ class ProductController extends FOSRestController
     {
         $product = $this->repository->findOneBy(['id' => $id]);
         // 404 response - Resource not found
-        if (!$product) {   
-            throw new EntityNotFoundException("This product with Id: $id is not found, try with an other product id please");   
+        if (!$product) {
+            throw new EntityNotFoundException(
+                "This product with Id: $id is not found, try with an other product id please"
+            );
         }
         return $product;
     }
     /**
      * This resource represents a collection of products with pagination
-     * 
+     *
      * @Rest\Get(
      *      path = "/products",
      *      name = "app_product_list"
      * )
      * @Rest\View(
      * StatusCode = Response::HTTP_OK, serializerGroups={"list_product"})
-     * 
+     *
      * @SWG\Response(
      *     response=200,
      *     description="Returns the products list",

@@ -28,5 +28,4 @@ class CustomerRepository extends ServiceEntityRepository
             ->getOneOrNullResult()
         ;
     }
-    
 }

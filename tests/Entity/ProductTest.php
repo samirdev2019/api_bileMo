@@ -132,7 +132,7 @@ class ProductTest extends TestCase
     public function testGetCreatedAt()
     {
         $this->product->setCreatedAt(new \DateTime());
-        $this->assertInstanceOf(\DateTime::class,$this->product->getCreatedAt());
+        $this->assertInstanceOf(\DateTime::class, $this->product->getCreatedAt());
     }
     public function testGetImageUrl()
     {

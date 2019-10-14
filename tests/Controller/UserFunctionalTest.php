@@ -30,5 +30,4 @@ class UserFunctionalTest extends WebTestCase
         $client->request('POST', '/users');
         $this->assertEquals(401, $client->getResponse()->getStatusCode());
     }
-  }
-  
+}
