@@ -1,5 +1,15 @@
 <?php
-
+/**
+ * The UserController file doc comment
+ *
+ * PHP version 7.2.10
+ *
+ * @category Class
+ * @package  App\UserController
+ * @author   Samir <allabsamir666@gmail.com>
+ * @license  Copyright 2019 General public license
+ * @link     src/Controller/UserContoller
+ */
 namespace App\Controller;
 
 use App\Entity\User;
@@ -27,12 +37,32 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Cache;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 
+/**
+ * The User controller class
+ *
+ * @category Class
+ * @package  App\Controller
+ * @author   Samir <allabsamir777@gmail.com>
+ * @license  Copyright 2019 General public license
+ * @link     src/Controller/ProductController
+ */
 class UserController extends FOSRestController
 {
     private $userRepository;
+    /**
+     * @var ObjectManger
+     */
     private $em;
     private $customerRepository;
     private $serializer;
+    /**
+     * Initialisation of differents objects in the constructor
+     *
+     * @param SerializerInterface $serializer
+     * @param UserRepository $userRepository
+     * @param ObjectManager $em
+     * @param CustomerRepository $customerRepository
+     */
     public function __construct(
         SerializerInterface $serializer,
         UserRepository $userRepository,

@@ -1,4 +1,15 @@
 <?php
+/**
+ * The ProductController file doc comment
+ *
+ * PHP version 7.2.10
+ *
+ * @category Class
+ * @package  App\ProductController
+ * @author   Samir <allabsamir666@gmail.com>
+ * @license  Copyright 2019 General public license
+ * @link     src/Controller/ProductContoller
+ */
 namespace App\Controller;
 
 use App\Entity\Product;
@@ -21,10 +32,28 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Cache;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 
+/**
+ * The Product controller class
+ *
+ * @category Class
+ * @package  App\Controller
+ * @author   Samir <allabsamir777@gmail.com>
+ * @license  Copyright 2019 General public license
+ * @link     src/Controller/ProductController
+ */
 class ProductController extends FOSRestController
 {
+    /**
+     * @var object the product repository
+     */
     private $repository;
     private $serializer;
+    /**
+     * Undocumented function
+     *
+     * @param ProductRepository $repository   the product repository
+     * @param SerializerInterface $serializer the serializer
+     */
     public function __construct(ProductRepository $repository, SerializerInterface $serializer)
     {
         $this->repository = $repository;
@@ -73,6 +102,8 @@ class ProductController extends FOSRestController
      * )
      * @SWG\Tag(name="Products")
      * @Security(name="Bearer")
+     * @param integer $id the identifier of product
+     * @return response
      */
     public function showAction($id)
     {
@@ -131,8 +162,11 @@ class ProductController extends FOSRestController
      * )
      * @SWG\Tag(name="Products")
      * @Security(name="Bearer")
+     * @param Request $request
+     * @param PaginatorInterface $paginator
+     * @return Response
      */
-    public function listGetAction(Request $request, PaginatorInterface $paginator)
+    public function listGetAction(Request $request, PaginatorInterface $paginator):Response
     {
          $queryBuilder = $this->repository->findAllProductQuery();
         
