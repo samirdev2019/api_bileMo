@@ -401,9 +401,8 @@ class UserController extends FOSRestController
         if ($form->isValid()) {
             $this->em->flush();
             return $user;
-        } else {
-            return $form;
         }
-        //return$this->handleView($this->view($form->getErrors()));
+            return $form;
+        //return $this->handleView($this->view($form->getErrors()));
     }
 }

@@ -20,7 +20,7 @@ class CustomerController extends FOSRestController
         $this->encoder = $encoder;
     }
     
-    public function register(Request $request, ObjectManager $em)
+    public function register(Request $request, ObjectManager $entityManager)
     {
         $username = $request->request->get('username');
         $password = $request->request->get('password');
@@ -30,8 +30,8 @@ class CustomerController extends FOSRestController
         $customer->setUsername($username);
         $customer->setRoles(['ROLE_USER']);
         $customer->setPassword($this->encoder->encodePassword($customer, $password));
-        $em->persist($customer);
-        $em->flush();
+        $entityManager->persist($customer);
+        $entityManager->flush();
         return new Response(
             sprintf(
                 'Customer %s successfully created',
