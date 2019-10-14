@@ -6,12 +6,13 @@ use App\Entity\Product;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\Persistence\ObjectManager;
 use Faker;
+
 class ProductFixtures extends Fixture
 {
     public function load(ObjectManager $manager)
     {
         $faker = Faker\Factory::create('fr_FR');
-        for($i=0; $i<=100; $i++) {
+        for ($i=0; $i<=100; $i++) {
             $product = new Product();
             $product->setMark("Sumsung");
             $product->setReference($faker->bothify('Sumsung ##??'));
@@ -28,7 +29,7 @@ class ProductFixtures extends Fixture
             $product->setProcessor("3X1.53 GHz");
             $product->setCreatedAt(new \DateTime());
             $product->setImageUrl("http://imageurl.it/340X150");
-            $manager->persist($product);   
+            $manager->persist($product);
         }
         $manager->flush();
     }

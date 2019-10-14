@@ -1,5 +1,15 @@
 <?php
-
+/**
+ * The UserController file doc comment
+ *
+ * PHP version 7.2.10
+ *
+ * @category Class
+ * @package  App\UserController
+ * @author   Samir <allabsamir666@gmail.com>
+ * @license  Copyright 2019 General public license
+ * @link     src/Controller/UserContoller
+ */
 namespace App\Controller;
 
 use App\Entity\User;
@@ -10,7 +20,7 @@ use Swagger\Annotations\Property;
 use App\Repository\UserRepository;
 use App\Repository\CustomerRepository;
 use JMS\Serializer\SerializationContext;
-use JMS\Serializer\SerializerInterface; 
+use JMS\Serializer\SerializerInterface;
 use Nelmio\ApiDocBundle\Annotation\Model;
 use App\Exception\EntityNotFoundException;
 use Knp\Component\Pager\PaginatorInterface;
@@ -27,12 +37,32 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Cache;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 
+/**
+ * The User controller class
+ *
+ * @category Class
+ * @package  App\Controller
+ * @author   Samir <allabsamir777@gmail.com>
+ * @license  Copyright 2019 General public license
+ * @link     src/Controller/ProductController
+ */
 class UserController extends FOSRestController
 {
     private $userRepository;
+    /**
+     * @var ObjectManger
+     */
     private $em;
     private $customerRepository;
     private $serializer;
+    /**
+     * Initialisation of differents objects in the constructor
+     *
+     * @param SerializerInterface $serializer
+     * @param UserRepository $userRepository
+     * @param ObjectManager $em
+     * @param CustomerRepository $customerRepository
+     */
     public function __construct(
         SerializerInterface $serializer,
         UserRepository $userRepository,
@@ -43,7 +73,6 @@ class UserController extends FOSRestController
         $this->customerRepository = $customerRepository;
         $this->em = $em;
         $this->serializer = $serializer;
-
     }
    
     /**
@@ -92,26 +121,26 @@ class UserController extends FOSRestController
      * @Security(name="Bearer")
      */
     public function getUserAction($id)
-    {  
+    {
         $user = $this->userRepository->findOneBy(['id' => $id]);
         
         if (!$user) {
-            throw new EntityNotFoundException("This user with Id: $id is not found, try with an other user id please");   
+            throw new EntityNotFoundException("This user with Id: $id is not found, try with an other user id please");
         }
          $data = $this->serializer->serialize($user, 'json');
-         $response = new Response($data,Response::HTTP_OK);
+         $response = new Response($data, Response::HTTP_OK);
          $response->headers->set('Content-Type', 'application/json');
         return $response;
     }
     /**
-     * Adds a new user : 
-     *   if created the resource absolute url location will be added to the header 
-     * 
+     * Adds a new user :
+     *   if created the resource absolute url location will be added to the header
+     *
      * @param User $user
      * @param Request $request
      * @param ConstraintViolationList $violations
      * @return View
-     * 
+     *
      * @Rest\Post(path = "/users",name = "app_user_create")
      * @Rest\View(StatusCode = Response::HTTP_CREATED, serializerGroups={"show_user"})
      * @ParamConverter(
@@ -121,7 +150,7 @@ class UserController extends FOSRestController
      *         "validator"={ "groups"="create_user" }
      *     }
      * )
-     * 
+     *
      * @SWG\Response(
      *     response=201,
      *     description="returned when Created",
@@ -163,7 +192,7 @@ class UserController extends FOSRestController
      * @Security(name="Bearer")
     */
 
-    public function postUserAction(User $user, Request $request,ConstraintViolationList $violations)
+    public function postUserAction(User $user, Request $request, ConstraintViolationList $violations)
     {
         if (count($violations)) {
             $message = 'The JSON sent contains invalid data. Here are the errors you need to correct: ';
@@ -175,7 +204,7 @@ class UserController extends FOSRestController
         }
         $customer = new Customer();
         $data = $request->getContent();
-        $user = $this->serializer->deserialize($data,User::class, 'json');        
+        $user = $this->serializer->deserialize($data, User::class, 'json');
         $user->setCustomer($this->getUser());
         $this->em->persist($user);
         $this->em->flush();
@@ -183,20 +212,20 @@ class UserController extends FOSRestController
             $user,
             Response::HTTP_CREATED,
             ['Location' => $this->generateUrl(
-                'app_user_show', 
+                'app_user_show',
                 ['id' => $user->getId(),
                 UrlGeneratorInterface::ABSOLUTE_URL]
             )]
         );
     }
     /**
-     * Delete a resource user by id 
+     * Delete a resource user by id
      *  returns an empty body and a status code 204
      *
      * @param integer $id
      * @return View
      * @Rest\Delete(path = "/users/{id}",name = "app_user_delete" )
-     * 
+     *
      * @SWG\Response(
      *     response=204,
      *     description="No content : deleted user",
@@ -225,12 +254,12 @@ class UserController extends FOSRestController
     public function deleteUsersAction(int $id)
     {
         $user = $this->userRepository->findOneBy(['id' => $id]);
-        if($user) {
+        if ($user) {
             $this->em->remove($user);
             $this->em->flush();
         }
        
-        return $this->view(null,Response::HTTP_NO_CONTENT);
+        return $this->view(null, Response::HTTP_NO_CONTENT);
     }
     
      /**
@@ -243,7 +272,7 @@ class UserController extends FOSRestController
      *     name = "app_get_users"
      * )
      * @Rest\View(StatusCode = Response::HTTP_OK, serializerGroups={"users_by_customer"})
-     * 
+     *
       * @SWG\Response(
      *     response=200,
      *     description="OK: the users list is returned",
@@ -307,7 +336,7 @@ class UserController extends FOSRestController
     /**
      * @Rest\Put(path = "/users/{id}", name = "app_user_update")
      * @Rest\View(StatusCode = Response::HTTP_OK, serializerGroups={"update_user"})
-     * 
+     *
      * @SWG\Response(
      *     response=200,
      *     description="returned when Updated",
@@ -363,10 +392,12 @@ class UserController extends FOSRestController
     {
         $user = $this->userRepository->findOneBy(['id' => $id]);
         if (!$user) {
-            throw new EntityNotFoundException("you want update the user with Id: $id but is not found, try with an other user id please !");   
+            throw new EntityNotFoundException(
+                "you want update the user with Id: $id but is not found, try with an other user id please !"
+            );
         }
-        $form = $this->createForm(UserType::class, $user);  
-        $form->submit($request->request->all(),false);
+        $form = $this->createForm(UserType::class, $user);
+        $form->submit($request->request->all(), false);
         if ($form->isValid()) {
             $this->em->flush();
             return $user;

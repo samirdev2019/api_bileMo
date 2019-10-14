@@ -27,7 +27,7 @@ class AppFixtures extends Fixture
                 $customer->setUsername($username[$i]);
                 $customer->setRoles(['ROLE_USER']);
                 $customer->setPassword($this->encoder->encodePassword($customer, $password[$i]));
-                $manager->persist($customer);  
+                $manager->persist($customer);
             for ($k=0; $k <= 50; $k++) {
                 $user = new User();
                 $user->setFirstName($faker->firstNameMale);
@@ -38,9 +38,8 @@ class AppFixtures extends Fixture
                 $user->setCustomer($customer);
                 $user->setEmail($faker->email);
                 $user->setMobileNumber($faker->e164PhoneNumber);
-                $manager->persist($user);  
+                $manager->persist($user);
             }
-
         }
         $manager->flush();
     }

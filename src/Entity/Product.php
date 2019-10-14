@@ -12,7 +12,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\ProductRepository")
- * 
+ *
  * @Hateoas\Relation(
  *      "self",
  *      href = @Hateoas\Route(
@@ -34,7 +34,9 @@ use Symfony\Component\Validator\Constraints as Assert;
  * )
  */
 class Product
-{ 
+{
+
+ 
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()
@@ -49,7 +51,7 @@ class Product
     /**
      * @ORM\Column(type="string", length=255)
      * @Serializer\Groups({"list_product","show_product"})
-     * 
+     *
      * @var string
      * @SWG\Property(description="The mark of the product.")
      */
@@ -58,7 +60,7 @@ class Product
     /**
      * @ORM\Column(type="string", length=255)
      * @Serializer\Groups({"list_product","show_product"})
-     * 
+     *
      * @var string
      * @SWG\Property(description="The reference of the product.")
      */
@@ -67,7 +69,7 @@ class Product
     /**
      * @ORM\Column(type="string", length=255)
      * @Serializer\Groups("show_product")
-     * 
+     *
      * @var string
      * @SWG\Property(description="The storage capacity of the product.")
      */
@@ -76,7 +78,7 @@ class Product
     /**
      * @ORM\Column(type="string", length=255)
      * @Serializer\Groups("show_product")
-     * 
+     *
      * @var string
      * @SWG\Property(description="The product read access memory.")
      */
@@ -94,7 +96,7 @@ class Product
     /**
      * @ORM\Column(type="string", length=255)
      * @Serializer\Groups("show_product")
-     * 
+     *
      * @var string
      * @SWG\Property(description="The product screan size ")
      */
@@ -103,7 +105,7 @@ class Product
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      * @Serializer\Groups("show_product")
-     * 
+     *
      * @var string|null
      * @SWG\Property(description="The product principal camera resolution: e.g 12Mpx ")
      */
@@ -112,7 +114,7 @@ class Product
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      * @Serializer\Groups("show_product")
-     * 
+     *
      * @var string|null
      * @SWG\Property(description="The product second camera resolution: e.g 8Mpx ")
      */
@@ -121,7 +123,7 @@ class Product
     /**
      * @ORM\Column(type="boolean", nullable=true)
      * @Serializer\Groups("show_product")
-     * 
+     *
      * @var string|null
      * @SWG\Property(description="true if product have colors")
      */
@@ -130,7 +132,7 @@ class Product
     /**
      * @ORM\Column(type="decimal", precision=6, scale=2, nullable=true)
      * @Serializer\Groups("show_product")
-     * 
+     *
      * @var string|null
      * @SWG\Property(description="the product price ")
      */
@@ -139,7 +141,7 @@ class Product
     /**
      * @ORM\Column(type="string", length=255)
      * @Serializer\Groups("show_product")
-     * 
+     *
      * @var string
      * @SWG\Property(description="the operating system e.g :ANDROID")
      */
@@ -157,7 +159,7 @@ class Product
     /**
      * @Serializer\Groups("show_product")
      * @ORM\Column(type="datetime", nullable=true)
-     * 
+     *
      * @var \DateTimeInterface|null
      * @SWG\Property(type="string", format="date-time", description="the product publication date")
      */
@@ -166,7 +168,7 @@ class Product
     /**
      * @ORM\Column(type="text", nullable=true)
      * @Serializer\Groups("show_product")
-     * 
+     *
      * @var string|null
      * @SWG\Property(description="the product description")
      */
@@ -175,7 +177,7 @@ class Product
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      * @Serializer\Groups("show_product")
-     * 
+     *
      * @var string|null
      * @SWG\Property(description="the URL image of product")
      */

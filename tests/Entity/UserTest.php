@@ -47,7 +47,7 @@ class UserTest extends TestCase
     public function testGetCustomer()
     {
         $this->user->setCustomer(new Customer());
-        $this->assertInstanceOf(Customer::class,$this->user->getCustomer());
+        $this->assertInstanceOf(Customer::class, $this->user->getCustomer());
     }
     /**
      * @test
@@ -55,7 +55,7 @@ class UserTest extends TestCase
     public function testGetBirthDay()
     {
         $this->user->setBirthDay(new \DateTime());
-        $this->assertInstanceOf(\DateTime::class,$this->user->getBirthDay());
+        $this->assertInstanceOf(\DateTime::class, $this->user->getBirthDay());
     }
     /**
      * @test
