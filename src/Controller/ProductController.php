@@ -168,12 +168,7 @@ class ProductController extends FOSRestController
      */
     public function listGetAction(Request $request, PaginatorInterface $paginator):Response
     {
-         $queryBuilder = $this->repository->findAllProductQuery();
-        
-        if ($request->query->getAlnum('filter')) {
-            $products->where('bp.mark LIKE :mark')
-                ->setParameter('mark', '%' . $request->query->getAlnum('filter') . '%');
-        }
+        $queryBuilder = $this->repository->findAllProductQuery();
         $pagination = $paginator->paginate(
             $queryBuilder,
             $request->query->getInt('page', 1),

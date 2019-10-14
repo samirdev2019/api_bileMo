@@ -202,7 +202,6 @@ class UserController extends FOSRestController
 
             throw new ResourceValidationException($message);
         }
-        $customer = new Customer();
         $data = $request->getContent();
         $user = $this->serializer->deserialize($data, User::class, 'json');
         $user->setCustomer($this->getUser());
