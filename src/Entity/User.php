@@ -30,7 +30,6 @@ use Swagger\Annotations as SWG;
  *      "list",
  *      href = @Hateoas\Route(
  *          "app_get_users",
- *          parameters = { "id" = "expr(object.getCustomer().getId())" },
  *          absolute = true),
  *      exclusion = @Hateoas\Exclusion(
  *           groups = {"users_by_customer"})
