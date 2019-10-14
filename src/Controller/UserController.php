@@ -8,7 +8,7 @@ use App\Entity\Customer;
 use Swagger\Annotations as SWG;
 use Swagger\Annotations\Property;
 use App\Repository\UserRepository;
-use App\Repository\CustomerRepository;
+//use App\Repository\CustomerRepository;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\SerializerInterface; 
 use Nelmio\ApiDocBundle\Annotation\Model;
@@ -31,16 +31,15 @@ class UserController extends FOSRestController
 {
     private $userRepository;
     private $em;
-    private $customerRepository;
+    //private $customerRepository;
     private $serializer;
     public function __construct(
         SerializerInterface $serializer,
         UserRepository $userRepository,
-        ObjectManager $em,
-        CustomerRepository $customerRepository
+        ObjectManager $em //CustomerRepository $customerRepository
     ) {
         $this->userRepository = $userRepository;
-        $this->customerRepository = $customerRepository;
+        //$this->customerRepository = $customerRepository;
         $this->em = $em;
         $this->serializer = $serializer;
 

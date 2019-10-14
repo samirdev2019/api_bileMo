@@ -34,9 +34,4 @@ class CustomerController extends FOSRestController
         $em->flush();
         return New Response(sprintf('Customer %s successfully created', $customer->getUsername()),Response::HTTP_CREATED);
     }
-    // public function api()
-    // {
-    //     return new Response(sprintf('Logged in as %s', $this->getUser()->getUsername()));
-    // }
-   
 }
