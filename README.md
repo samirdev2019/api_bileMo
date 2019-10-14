@@ -4,6 +4,7 @@ this porject is created as part of a PHP / Symfony application developer trainin
 
 # The quality of the code
 <a href="https://codeclimate.com/github/samirdev2019/bileMo-API-REST/maintainability"><img src="https://api.codeclimate.com/v1/badges/ca14c014041769a1d21a/maintainability" /></a>
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/a470ddf8a6724ec5822839c55ce22380)](https://www.codacy.com/manual/samirdev2019/bileMo-API-REST?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=samirdev2019/bileMo-API-REST&amp;utm_campaign=Badge_Grade)
 
 # Installation:
 ____________________
@@ -24,9 +25,13 @@ in the .env enter the username, password and the name of database
 
 ``` $ php bin/console doctrine:fixtures:load ```
 #### 7-  Generate the SSH keys:
-``$ mkdir -p config/jwt``
-``$ openssl genpkey -out config/jwt/private.pem -aes256 -algorithm rsa -pkeyopt rsa_keygen_bits:4096``
-``$ openssl pkey -in config/jwt/private.pem -out config/jwt/public.pem -pubout``
+```
+$ mkdir -p config/jwt
+
+$ openssl genpkey -out config/jwt/private.pem -aes256 -algorithm rsa -pkeyopt rsa_keygen_bits:4096
+
+$ openssl pkey -in config/jwt/private.pem -out config/jwt/public.pem -pubout
+```
 ### Usage
 _________
 #### 1- run server 
